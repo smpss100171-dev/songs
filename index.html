@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#190d2d">
+  <title>BOO! 萬聖節猜歌闖關</title>
+  <meta name="description" content="可愛萬聖節主題的個人猜歌闖關遊戲，十題挑戰你的音樂魂！">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <span class="float ghost g1">👻</span><span class="float bat b1">🦇</span>
+    <span class="float ghost g2">👻</span><span class="float bat b2">🦇</span>
+    <span class="float pumpkin p1">🎃</span><span class="float star s1">✦</span>
+  </div>
+  <header class="topbar">
+    <button class="wordmark" id="homeBtn" aria-label="回首頁">🎃 BOO! <span>猜歌闖關</span></button>
+    <button class="icon-btn" id="soundToggle" aria-label="切換音效" title="切換音效">🔊</button>
+  </header>
+
+  <main class="app">
+    <section id="homeScreen" class="screen hero">
+      <div class="eyebrow">🕸️ HALLOWEEN MUSIC CHALLENGE 🕸️</div>
+      <h1>BOO!<span>猜歌大作戰</span></h1>
+      <p class="lead">聽旋律、猜歌名，看看你是不是派對裡的音樂通靈師！</p>
+      <div class="mascots" aria-hidden="true"><span>👻</span><span>🎃</span><span>🦇</span></div>
+      <div class="name-field">
+        <label for="playerName">你的闖關暱稱</label>
+        <input id="playerName" maxlength="18" placeholder="例如：南瓜小可愛" autocomplete="nickname">
+      </div>
+      <button class="btn primary big" id="startBtn">🪄 開始闖關</button>
+      <button class="btn secondary" id="howBtn">📜 遊戲說明</button>
+      <div class="stats"><span>🎵 10 題挑戰</span><span>⏱️ 20 秒答題</span><span>🏆 最高 1000 分／題</span></div>
+      <p class="tiny">你的分數會保存在這台裝置的瀏覽器中。</p>
+    </section>
+
+    <section id="howScreen" class="screen card hidden">
+      <button class="back" data-home>← 回首頁</button>
+      <h2>📜 遊戲說明</h2>
+      <ul class="instructions">
+        <li>每一題會播放一段歌曲試聽，選出正確的歌名。</li>
+        <li>每題有 20 秒；越快答對，分數越高，最高 1000 分。</li>
+        <li>每次闖關最多 10 題，完成後會看到你的成績與排名徽章。</li>
+        <li>音樂播放需要網路。部分試聽可能因地區或來源限制而無法播放。</li>
+      </ul>
+      <p class="notice">目前使用公開的 iTunes / Apple Music 搜尋與試聽資料。歌曲試聽是否可用，可能因地區、裝置或授權而不同。</p>
+      <button class="btn primary full" data-home>知道了！</button>
+    </section>
+
+    <section id="loadingScreen" class="screen card hidden">
+      <div class="loader">🎃</div><h2>小幽靈正在找歌…</h2><p id="loadingText" class="muted">準備你的萬聖節歌單。</p>
+    </section>
+
+    <section id="gameScreen" class="screen card hidden">
+      <div class="game-top">
+        <span class="pill" id="roundLabel">第 1 / 10 題</span>
+        <span class="pill score-pill">⭐ <b id="scoreLabel">0</b> 分</span>
+      </div>
+      <div class="progress"><div id="progressFill"></div></div>
+      <div class="timer-line"><span>⏳ 剩餘時間</span><strong id="timerText">20</strong></div>
+      <div class="timer"><div id="timerFill"></div></div>
+      <div class="record-art" id="recordArt" aria-hidden="true"><span>🎵</span></div>
+      <h2 class="question">這首歌是什麼？</h2>
+      <p class="muted" id="artistHint">聽聽看，選出正確歌名！</p>
+      <div id="audioWrap" class="audio-wrap">
+        <audio id="songAudio" controls preload="none"></audio>
+        <p class="audio-help" id="audioHelp">如果沒有自動播放，請按播放鍵。🎧</p>
+      </div>
+      <div id="answerGrid" class="answers"></div>
+      <div id="feedback" class="feedback hidden" role="status"></div>
+      <button id="nextBtn" class="btn primary full hidden">下一題 →</button>
+      <button id="skipBtn" class="text-btn">這首歌播不了？跳過這題 ↷</button>
+    </section>
+
+    <section id="resultScreen" class="screen card result hidden">
+      <div class="confetti" aria-hidden="true">🎉 ✨ 🎊 🎃 ✨ 🎉</div>
+      <div class="eyebrow">CHALLENGE COMPLETE</div>
+      <h2>音樂小魔王出爐！</h2>
+      <div class="final-score"><strong id="finalScore">0</strong><span>分</span></div>
+      <p id="resultMessage" class="lead"></p>
+      <div class="result-stats">
+        <div><strong id="correctCount">0</strong><span>答對題數</span></div>
+        <div><strong id="accuracy">0%</strong><span>答對率</span></div>
+        <div><strong id="bestScore">0</strong><span>個人最高分</span></div>
+      </div>
+      <h3>🏅 你的闖關徽章</h3>
+      <div id="badge" class="badge">🎃 南瓜新手</div>
+      <h3>🕯️ 本次答題回顧</h3>
+      <div id="reviewList" class="review-list"></div>
+      <button id="againBtn" class="btn primary full">🔁 再玩一次</button>
+      <button id="homeAgainBtn" class="btn secondary full">回到首頁</button>
+    </section>
+  </main>
+
+  <footer><span>🦇 BOO! Music Challenge</span><span>用一點魔法，猜出整個歌單 ✨</span></footer>
+
+  <dialog id="messageDialog">
+    <div class="dialog-emoji">👻</div><h2 id="dialogTitle">小提醒</h2><p id="dialogText"></p>
+    <button class="btn primary full" id="dialogOk">好喔！</button>
+  </dialog>
+  <script src="script.js"></script>
+</body>
+</html>
